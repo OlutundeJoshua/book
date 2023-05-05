@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
-import { BooksDto } from './dto/books.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
-import { Books } from './entity/books';
+import { BooksDto } from '../dto/books.dto';
+import { UpdateBookDto } from '../dto/update-book.dto';
+import { Books } from '../entity/books';
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -42,7 +42,7 @@ describe('BooksController', () => {
       } as Books])
     },
 
-    deleteBook: (id: string) => {}
+    deleteBook: (id: string) => Promise.resolve({ message: 'deleted'})
     }
 
 
@@ -95,8 +95,9 @@ describe('BooksController', () => {
     })
   })
 
-  it ('DeleteBook should delete a book', () => {
-    expect(controller.deleteBook('1')).toBe(undefined);
+  it ('DeleteBook should delete a book', async () => {
+    const book = await (controller.deleteBook('1'))
+    expect(book).toEqual({message: 'deleted'});
   })
 
 });

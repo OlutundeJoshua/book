@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
 import { HttpException } from '@nestjs/common';
-import { Books } from './entity/books';
+import { Books } from '../entity/books';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -57,6 +57,7 @@ describe('BooksService', () => {
   })
   
   it('should update a book given a book id', async () => {
+    
     const book = await service.updateBook('1', {title: 'new title'});
     expect(book).toEqual({
         id: '1',
@@ -65,9 +66,13 @@ describe('BooksService', () => {
     })
   })
 
-  it ('DeleteBook should delete a book', () => {
-    expect(service.deleteBook('1')).toBe(undefined);
+  it ('DeleteBook should delete a book', async () => {
+    const response = await (service.deleteBook('1'))
+    expect(response).toEqual({ message: 'deleted'});
   })
-  
+
+  it('DeleteBook throws an error if book id is not found', async () => {
+    expect(service.deleteBook('2')).rejects.toThrow(HttpException)
+ })
 
 });

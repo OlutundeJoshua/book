@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
-import { Book } from './entity/books';
+import { Book, TestBook } from '../entity/books';
+
+
+
 
 @Module({
   controllers: [BooksController],
@@ -9,7 +12,7 @@ import { Book } from './entity/books';
     BooksService,
     {
       provide: 'BOOK',
-      useValue: Book
+      useValue: process.env.NODE_ENV === 'development' ? Book : TestBook
     }
   ]
 })
