@@ -3,3 +3,5 @@ export class Books {
   title: string;
   content: string;
 }
+
+export const  Book: Books[] =[]

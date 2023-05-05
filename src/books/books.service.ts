@@ -6,9 +6,8 @@ import { UpdateBookDto } from './dto/update-book.dto';
 
 @Injectable()
 export class BooksService {
-
-  private _books: Books[] = [];
-  
+  constructor(@Inject('BOOK') private _books: Books[]) {}
+    
   createBook(book: BooksDto) {
     const newBook = { ...book, id: v4() }
     this._books.push(newBook);

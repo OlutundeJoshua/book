@@ -13,7 +13,7 @@ describe('BooksController', () => {
     fakeBooksService = {
       createBook: (book: BooksDto) => {
         return {
-          id: 1,
+          id: '1',
           ...book
         }
       },
@@ -28,9 +28,9 @@ describe('BooksController', () => {
 
       getBook: (id: string) => {
         return Promise.resolve({
-        id,
-        title: 'foo',
-        content: 'content'
+          id,
+          title: 'foo',
+          content: 'content'
       })
     },
 
@@ -66,18 +66,18 @@ describe('BooksController', () => {
   it('create a book',  () => {
     const book =  controller.createBook({title: 'foo', content: 'Test'});
     expect(book).toEqual({
-      id: 1,
+      id: '1',
       title: 'foo',
       content: 'Test'
     })
   })
 
-  it('findBook return a book with given id', () => {
-    const book = controller.getBook('1')
+  it('findBook return a book with given id', async () => {
+    const book = await controller.getBook('1')
     expect(book).toEqual({
-      id: 1,
+      id: '1',
       title: 'foo',
-      content: 'Content'
+      content: 'content'
     })
   });
 
@@ -89,7 +89,7 @@ describe('BooksController', () => {
   it('updateBook should update a book with given id', async () => {
     const book = await controller.updateBook('1', {title: 'Hello World'})
     expect(book).toEqual({
-      id: 1,
+      id: '1',
       title: 'Hello World',
       content: 'original'
     })
@@ -100,3 +100,4 @@ describe('BooksController', () => {
   })
 
 });
+
