@@ -22,7 +22,7 @@ export class BooksService {
   async getBook(id: string): Promise<Books> {
     const book = await this._books.find(book => book.id === id)
     if(!book) {
-      throw new HttpException('BadRequest', HttpStatus.BAD_REQUEST)
+      throw new HttpException('NotFound', HttpStatus.NOT_FOUND)
     }
 
     return book
@@ -31,7 +31,7 @@ export class BooksService {
   async updateBook(id:string, book:UpdateBookDto) {
     let oldBook = await this._books.find(book => book.id === id)
     if(!oldBook) {
-      throw new HttpException('BadRequest', HttpStatus.BAD_REQUEST)
+      throw new HttpException('NotFound', HttpStatus.NOT_FOUND)
     }
 
     // oldBook.title = book.title ? book.title : oldBook.title;
@@ -47,7 +47,7 @@ export class BooksService {
   async deleteBook(id: string) {
     const book = await this._books.find(book => book.id === id)
     if(!book) {
-      throw new HttpException('BadRequest', HttpStatus.BAD_REQUEST)
+      throw new HttpException('NotFound', HttpStatus.NOT_FOUND)
     }
    
     this._books = this._books.filter(book => book.id !== id)

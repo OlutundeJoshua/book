@@ -44,19 +44,19 @@ describe('Book System (e2e)', () => {
   it('/ (GETONEBOOK) Should throw an error if id is not found', () => {
     return request(app.getHttpServer())
     .get('/books/4')
-    .expect(400)
+    .expect(404)
   })
 
   it('/ (UPDATE) should throw an error if id is not found', () => {
     return request(app.getHttpServer())
     .patch('/books/4')
-    .expect(400)
+    .expect(404)
   })
 
   it('/ (DELETE) should throw an error if id is not found', () => {
     return request(app.getHttpServer())
     .delete('/books/4')
-    .expect(400)
+    .expect(404)
   })
 
   it('/UPDATE should update a book given id', () => {
