@@ -88,7 +88,7 @@ describe('Book System (e2e)', () => {
 
   it('/DELETE should delete a book given id', () => {
     return request(app.getHttpServer())
-    .delete('/books/9')
+    .delete('/books/17')
     .expect(200)
   })
 
