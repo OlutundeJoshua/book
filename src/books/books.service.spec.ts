@@ -14,7 +14,8 @@ describe('BooksService', () => {
       create: (dto) => dto,
       save: (book) => Promise.resolve({ id: 1, ...book}),
       find: () => Promise.resolve([]),
-      findOneBy: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})
+      findOneBy: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'}),
+      remove: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})
     }
 
     const module: TestingModule = await Test.createTestingModule({
@@ -52,33 +53,31 @@ describe('BooksService', () => {
   })
   
   // it('GetBook throws an error if book id is not found', async () => {
-  //    expect(service.getBook(2)).rejects.toThrow(HttpException)
+  //    expect(service.getBook(10000)).rejects.toThrow(HttpException)
   // })
-
   
-  
-  //   it('should update a book given a book id', async () => {
+    it('should update a book given a book id', async () => {
     
-//     const book = await service.updateBook(1, {title: 'new title'});
-//     expect(book).toEqual({
-  //         id: '1',
-  //         title: 'new title',
-  //         content: 'content'
-  //     })
-  //   })
+    const book = await service.updateBook(1, {title: 'new title'});
+    expect(book).toEqual({
+          id: 1,
+          title: 'new title',
+          content: 'content'
+      })
+    })
   
   // it('throws an error if book id is not found', async () => {
   //    expect(service.updateBook(2, {title: 'title'})).rejects.toThrow(HttpException)
   // })
 
-  //   it ('DeleteBook should delete a book', async () => {
-//     const response = await (service.deleteBook(1))
-//     expect(response).toEqual({
-//       id: 1,
-//       title: 'title',
-//       content: 'content'
-//     });
-//   })
+    it ('DeleteBook should delete a book', async () => {
+    const response = await (service.deleteBook(15))
+    expect(response).toEqual({
+      id: 15,
+      title: 'title',
+      content: 'content'
+    });
+  })
 
 //   it('DeleteBook throws an error if book id is not found', async () => {
 //     expect(service.deleteBook(2)).rejects.toThrow(HttpException)

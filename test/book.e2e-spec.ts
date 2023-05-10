@@ -3,15 +3,18 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { Books } from '../src/entity/books';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 
 
 describe('Book System (e2e)', () => {
   let app: INestApplication;
+
   const mockRepo = {
-    id: 1,
-    title: 'title',
-    content: 'content',
+    create: (dto) => dto,
+    save: (book) => Promise.resolve({ id: 1, ...book}),
+    find: () => Promise.resolve([]),
+    findOneBy: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'}),
+    remove: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})
   }
   
   beforeEach(async () => {
@@ -53,43 +56,40 @@ describe('Book System (e2e)', () => {
     .expect(200)
   })
 
-  // it('/ (GETONEBOOK) Should throw an error if id is not found', () => {
-  //   return request(app.getHttpServer())
-  //   .get('/books/1000')
-  //   .expect(404)
-  // })
+  it('/ (GETONEBOOK) Should throw an error if id is not found', () => {
+    return request(app.getHttpServer())
+    .get('/books/1000')
+    .expect(404)
+  })
 
-  // it('/ (UPDATE) should throw an error if id is not found', () => {
-  //   return request(app.getHttpServer())
-  //   .patch('/books/1000')
-  //   .expect(404)
-  // })
+  it('/ (UPDATE) should throw an error if id is not found', () => {
+    return request(app.getHttpServer())
+    .patch('/books/1000')
+    .expect(404)
+  })
 
-  // it('/ (DELETE) should throw an error if id is not found', () => {
-  //   return request(app.getHttpServer())
-  //   .delete('/books/1000')
-  //   .expect(404)
-  // })
+  it('/ (DELETE) should throw an error if id is not found', () => {
+    return request(app.getHttpServer())
+    .delete('/books/1000')
+    .expect(404)
+  })
 
-  // it('/UPDATE should update a book given id', () => {
-  //   return request(app.getHttpServer())
-  //   .patch('/books/1')
-  //   .send({ title: 'updated'})
-  //   .then((res) => {
-  //     const {id, title, content} = res.body;
-  //     expect(id).toBeDefined();
-  //     expect(title).toEqual('updated');
-  //     expect(content).toBeDefined();
-  //   })
-  // })
+  it('/UPDATE should update a book given id', () => {
+    return request(app.getHttpServer())
+    .patch('/books/1')
+    .send({ title: 'updated'})
+    .then((res) => {
+      const {id, title, content} = res.body;
+      expect(id).toBeDefined();
+      expect(title).toEqual('updated');
+      expect(content).toBeDefined();
+    })
+  })
 
-  // it('/DELETE should delete a book given id', () => {
-  //   return request(app.getHttpServer())
-  //   .delete('/books/1')
-  //   .then((res) => {
-  //     const {message} =res.body
-  //     expect(message).toEqual('undefined')
-  //   })
-  // })
+  it('/DELETE should delete a book given id', () => {
+    return request(app.getHttpServer())
+    .delete('/books/9')
+    .expect(200)
+  })
 
 });

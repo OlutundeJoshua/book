@@ -14,9 +14,3 @@ export class Books {
 }
 
 // export const  Book: Books[] =[]
-
-export const TestBook: Books[] = [{
-  id: 1,
-  title: 'title',
-  content: 'content',
-}]
