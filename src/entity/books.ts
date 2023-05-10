@@ -1,13 +1,22 @@
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity()
 export class Books {
-  id: string;
+
+  @PrimaryGeneratedColumn()
+  id: number;
+  
+  @Column()
   title: string;
+
+  @Column()
   content: string;
 }
 
-export const  Book: Books[] =[]
+// export const  Book: Books[] =[]
 
 export const TestBook: Books[] = [{
-  id: '1',
+  id: 1,
   title: 'title',
   content: 'content',
 }]

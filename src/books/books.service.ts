@@ -1,26 +1,30 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Books } from '../entity/books';
 import { BooksDto } from '../dto/books.dto';
-import {v4} from 'uuid';
 import { UpdateBookDto } from '../dto/update-book.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BooksService {
-  constructor(@Inject('BOOK') private _books: Books[]) {}
+  constructor(@InjectRepository(Books) 
+  private booksRepository: Repository<Books>) {}
+
+  // constructor(@Inject('BOOK') private _books: Books[]) {}
     
-  createBook(book: BooksDto) {
-    const newBook = { ...book, id: v4() }
-    this._books.push(newBook);
+  async createBook(book: BooksDto) {
+    const { title, content } = book;
+    const newBook = await this.booksRepository.create({ title, content });
     
-    return newBook
+    return this.booksRepository.save(newBook);
   }
   
-  async getBooks(): Promise<Books[]> {
-    return this._books;
+  async getBooks() {
+    return this.booksRepository.find();
   }
 
-  async getBook(id: string): Promise<Books> {
-    const book = await this._books.find(book => book.id === id)
+  async getBook(id: number) {
+    const book = await this.booksRepository.findOneBy({ id });
     if(!book) {
       throw new HttpException('NotFound', HttpStatus.NOT_FOUND)
     }
@@ -28,29 +32,25 @@ export class BooksService {
     return book
   }
 
-  async updateBook(id:string, book:UpdateBookDto) {
-    let oldBook = await this._books.find(book => book.id === id)
+  async updateBook(id:number, book:UpdateBookDto) {
+    let oldBook = await this.booksRepository.findOneBy({ id });
+    
     if(!oldBook) {
       throw new HttpException('NotFound', HttpStatus.NOT_FOUND)
     }
 
-    // oldBook.title = book.title ? book.title : oldBook.title;
-    // oldBook.content = book.content ? book.content : oldBook.content;
+   Object.assign( oldBook, book);
 
-    let newBook = Object.assign( oldBook, book);
-
-    oldBook = newBook;
-    return oldBook;
+    return this.booksRepository.save(oldBook);
     
   }
 
-  async deleteBook(id: string) {
-    const book = await this._books.find(book => book.id === id)
+  async deleteBook(id: number) {
+    const book = await this.booksRepository.findOneBy({ id });
     if(!book) {
       throw new HttpException('NotFound', HttpStatus.NOT_FOUND)
     }
    
-    this._books = this._books.filter(book => book.id !== id)
-    return { message: 'deleted'}
+    return await this.booksRepository.remove(book)
   }
 }

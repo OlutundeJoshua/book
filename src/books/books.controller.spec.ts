@@ -11,14 +11,15 @@ describe('BooksController', () => {
 
   beforeEach(async () => {
     fakeBooksService = {
-      createBook: (book: BooksDto) => {
+      createBook: async (book: BooksDto) => {
         return {
-          id: '1',
-          ...book
-        }
+          id: 1,
+          title: book.title,
+          content: book.content
+        } 
       },
 
-      updateBook: (id: string, book: UpdateBookDto) => {
+      updateBook: (id: number, book: UpdateBookDto) => {
         return Promise.resolve({
           id,
           title: book.title ? book.title : 'original',
@@ -26,7 +27,7 @@ describe('BooksController', () => {
         })
       },
 
-      getBook: (id: string) => {
+      getBook: (id: number) => {
         return Promise.resolve({
           id,
           title: 'foo',
@@ -36,13 +37,17 @@ describe('BooksController', () => {
 
     getBooks: () =>{
       return Promise.resolve([{
-        id: '1',
+        id: 1,
         title: 'foo',
         content: 'content'
       } as Books])
     },
 
-    deleteBook: (id: string) => Promise.resolve({ message: 'deleted'})
+    deleteBook: (id: number) => Promise.resolve({
+      id: 1,
+      title: 'foo',
+      content: 'content'
+    })
     }
 
 
@@ -63,10 +68,10 @@ describe('BooksController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('create a book',  () => {
-    const book =  controller.createBook({title: 'foo', content: 'Test'});
+  it('create a book',  async () => {
+    const book = await controller.createBook({title: 'foo', content: 'Test'});
     expect(book).toEqual({
-      id: '1',
+      id: 1,
       title: 'foo',
       content: 'Test'
     })
@@ -75,7 +80,7 @@ describe('BooksController', () => {
   it('findBook return a book with given id', async () => {
     const book = await controller.getBook('1')
     expect(book).toEqual({
-      id: '1',
+      id: 1,
       title: 'foo',
       content: 'content'
     })
@@ -89,15 +94,20 @@ describe('BooksController', () => {
   it('updateBook should update a book with given id', async () => {
     const book = await controller.updateBook('1', {title: 'Hello World'})
     expect(book).toEqual({
-      id: '1',
+      id: 1,
       title: 'Hello World',
       content: 'original'
     })
   })
 
+
   it ('DeleteBook should delete a book', async () => {
     const book = await (controller.deleteBook('1'))
-    expect(book).toEqual({message: 'deleted'});
+    expect(book).toEqual({
+      id: 1,
+      title: 'foo',
+      content: 'content'
+    });
   })
 
 });

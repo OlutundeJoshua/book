@@ -20,7 +20,8 @@ export class BooksController {
 
   @Get('/:id')
   getBook(@Param('id') id: string) {
-    return this.booksService.getBook(id);
+    const book = this.booksService.getBook(parseInt(id));
+    return book;
   }
 
   @Patch('/:id')
@@ -28,12 +29,12 @@ export class BooksController {
     @Param('id') id: string,
     @Body() body: UpdateBookDto
   ) {
-    return this.booksService.updateBook(id, body);
+    return this.booksService.updateBook(parseInt(id), body);
   }
 
   @Delete('/:id')
   deleteBook (@Param('id') id: string) {
-    return this.booksService.deleteBook(id);
+    return this.booksService.deleteBook(parseInt(id));
   }
 
 }
