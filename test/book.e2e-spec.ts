@@ -10,11 +10,11 @@ describe('Book System (e2e)', () => {
   let app: INestApplication;
 
   const mockRepo = {
-    create: (dto) => dto,
-    save: (book) => Promise.resolve({ id: 1, ...book}),
-    find: () => Promise.resolve([]),
-    findOneBy: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'}),
-    remove: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})
+    create: jest.fn((dto) => dto),
+    save: jest.fn((book) => Promise.resolve({ id: 1, ...book})),
+    find: jest.fn(() => Promise.resolve([])),
+    findOneBy: jest.fn(({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})),
+    remove: jest.fn(({ id }) => Promise.resolve({ id, title: 'title', content: 'content'}))
   }
   
   beforeEach(async () => {
@@ -88,7 +88,7 @@ describe('Book System (e2e)', () => {
 
   it('/DELETE should delete a book given id', () => {
     return request(app.getHttpServer())
-    .delete('/books/17')
+    .delete('/books/7')
     .expect(200)
   })
 

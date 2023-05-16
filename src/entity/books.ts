@@ -6,10 +6,10 @@ export class Books {
   @PrimaryGeneratedColumn()
   id: number;
   
-  @Column()
+  @Column('varchar')
   title: string;
 
-  @Column()
+  @Column('text')
   content: string;
 }
 

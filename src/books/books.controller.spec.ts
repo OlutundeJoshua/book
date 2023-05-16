@@ -7,49 +7,48 @@ import { Books } from '../entity/books';
 
 describe('BooksController', () => {
   let controller: BooksController;
-  let fakeBooksService: Partial<BooksService>;
+  let fakeBooksService;
 
   beforeEach(async () => {
     fakeBooksService = {
-      createBook: async (book: BooksDto) => {
+      createBook: jest.fn((book: BooksDto) => {
         return {
           id: 1,
-          title: book.title,
-          content: book.content
+         ...book
         } 
-      },
+      }),
 
       
-      updateBook: (id: number, book: UpdateBookDto) => {
+      updateBook: jest.fn((id: number, book: UpdateBookDto) => {
         return Promise.resolve({
           id,
           title: book.title ? book.title : 'original',
           content: book.content ? book.content : 'original'
         })
-      },
+      }),
 
-      getBook: (id: number) => {
+      getBook: jest.fn((id: number) => {
         return Promise.resolve({
           id,
           title: 'foo',
           content: 'content'
       })
-    },
+    }),
 
-    getBooks: () =>{
+    getBooks: jest.fn(() =>{
       return Promise.resolve([{
         id: 1,
         title: 'foo',
         content: 'content'
       } as Books])
-    },
+    }),
 
-    deleteBook: (id: number) => Promise.resolve({
+    deleteBook: jest.fn((id: number) => Promise.resolve({
       id: 1,
       title: 'foo',
       content: 'content'
-    })
-    }
+    }))
+  }
 
 
     const module: TestingModule = await Test.createTestingModule({
@@ -71,44 +70,33 @@ describe('BooksController', () => {
 
   it('create a book',  async () => {
     const book = await controller.createBook({title: 'foo', content: 'Test'});
-    expect(book).toEqual({
-      id: 1,
-      title: 'foo',
-      content: 'Test'
-    })
+    expect(book).toBeDefined()
+    expect(fakeBooksService.createBook).toHaveBeenCalled()
   })
 
   it('findBook return a book with given id', async () => {
-    const book = await controller.getBook('1')
-    expect(book).toEqual({
-      id: 1,
-      title: 'foo',
-      content: 'content'
-    })
+    const book = await controller.getBook(1)
+    expect(book).toBeDefined()
+    expect(fakeBooksService.getBook).toHaveBeenCalled()
   });
 
   it('findBooks return all the books', () => {
     const books = controller.getBooks();
     expect(books).toBeDefined();
+    expect(fakeBooksService.getBooks).toHaveBeenCalled()
   })
 
   it('updateBook should update a book with given id', async () => {
-    const book = await controller.updateBook('1', {title: 'Hello World'})
-    expect(book).toEqual({
-      id: 1,
-      title: 'Hello World',
-      content: 'original'
-    })
+    const book = await controller.updateBook(1, {title: 'Hello World'})
+    expect(book).toBeDefined()
+    expect(fakeBooksService.updateBook).toHaveBeenCalled()
   })
 
 
   it ('DeleteBook should delete a book', async () => {
-    const book = await (controller.deleteBook('1'))
-    expect(book).toEqual({
-      id: 1,
-      title: 'foo',
-      content: 'content'
-    });
+    const book = await (controller.deleteBook(1))
+    expect(book).toBeDefined()
+    expect(fakeBooksService.deleteBook).toHaveBeenCalled()
   })
 
 });

@@ -7,22 +7,20 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 describe('BooksService', () => {
   let service: BooksService;
 
+  const mockRepository = {
+    create: jest.fn((dto) => dto),
+    save: jest.fn((book) => Promise.resolve({ id: 1, ...book})),
+    find: jest.fn(() => Promise.resolve([])),
+    findOneBy: jest.fn(({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})),
+    remove: jest.fn(({ id }) => Promise.resolve({ id, title: 'title', content: 'content'}))
+  }
+
   beforeEach(async () => {
-
-
-    const mockRepo = {
-      create: (dto) => dto,
-      save: (book) => Promise.resolve({ id: 1, ...book}),
-      find: () => Promise.resolve([]),
-      findOneBy: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'}),
-      remove: ({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})
-    }
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [ BooksService, 
       {
         provide: getRepositoryToken(Books),
-        useValue: mockRepo
+        useValue: mockRepository
       }],
     }).compile();
 
@@ -32,6 +30,7 @@ describe('BooksService', () => {
   it('getBooks should return all books', async () => {
     const books = await service.getBooks();
     expect(books).toBeDefined;
+    expect(mockRepository.find).toHaveBeenCalled()
   })
 
   it('getBook should return a book given its id', async () => {
@@ -43,6 +42,7 @@ describe('BooksService', () => {
         content: 'content'
       }
     )
+    expect(mockRepository.findOneBy).toHaveBeenCalled()
   })
 
   it('createBook should create a book', async () => {
@@ -50,6 +50,10 @@ describe('BooksService', () => {
     expect(book.id).toBeDefined();
     expect(book.title).toEqual('title');
     expect(book.content).toEqual('content');
+    expect(mockRepository.create).toHaveBeenCalled()
+    expect(mockRepository.save).toHaveBeenCalled()
+
+
   })
   
   // it('GetBook throws an error if book id is not found', async () => {
@@ -64,6 +68,10 @@ describe('BooksService', () => {
           title: 'new title',
           content: 'content'
       })
+      expect(mockRepository.findOneBy).toHaveBeenCalled()
+      expect(mockRepository.save).toHaveBeenCalled()
+
+
     })
   
   // it('throws an error if book id is not found', async () => {
@@ -77,6 +85,8 @@ describe('BooksService', () => {
       title: 'title',
       content: 'content'
     });
+    expect(mockRepository.remove).toHaveBeenCalled()
+
   })
 
 //   it('DeleteBook throws an error if book id is not found', async () => {
