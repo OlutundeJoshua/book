@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Books } from '../entity/books';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -11,7 +11,15 @@ describe('BooksService', () => {
     create: jest.fn((dto) => dto),
     save: jest.fn((book) => Promise.resolve({ id: 1, ...book})),
     find: jest.fn(() => Promise.resolve([])),
-    findOneBy: jest.fn(({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})),
+
+    findOneBy: jest.fn(({ id }) => {
+      if(id > 900) {
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+      }
+      
+      return Promise.resolve({ id, title: 'title', content: 'content'})
+    }),
+    
     remove: jest.fn(({ id }) => Promise.resolve({ id, title: 'title', content: 'content'}))
   }
 
@@ -21,13 +29,15 @@ describe('BooksService', () => {
       {
         provide: getRepositoryToken(Books),
         useValue: mockRepository
-      }],
+      }
+    ],
     }).compile();
 
     service = module.get<BooksService>(BooksService);
   });
 
   it('getBooks should return all books', async () => {
+
     const books = await service.getBooks();
     expect(books).toBeDefined;
     expect(mockRepository.find).toHaveBeenCalled()
@@ -53,12 +63,11 @@ describe('BooksService', () => {
     expect(mockRepository.create).toHaveBeenCalled()
     expect(mockRepository.save).toHaveBeenCalled()
 
-
   })
   
-  // it('GetBook throws an error if book id is not found', async () => {
-  //    expect(service.getBook(10000)).rejects.toThrow(HttpException)
-  // })
+  it('GetBook throws an error if book id is not found', async () => {
+     expect(service.getBook(10000)).rejects.toThrow(HttpException)
+  })
   
     it('should update a book given a book id', async () => {
     
@@ -74,9 +83,9 @@ describe('BooksService', () => {
 
     })
   
-  // it('throws an error if book id is not found', async () => {
-  //    expect(service.updateBook(2, {title: 'title'})).rejects.toThrow(HttpException)
-  // })
+  it('throws an error if book id is not found', async () => {
+     expect(service.updateBook(1000, {title: 'title'})).rejects.toThrow(HttpException)
+  })
 
     it ('DeleteBook should delete a book', async () => {
     const response = await (service.deleteBook(15))
@@ -89,8 +98,8 @@ describe('BooksService', () => {
 
   })
 
-//   it('DeleteBook throws an error if book id is not found', async () => {
-//     expect(service.deleteBook(2)).rejects.toThrow(HttpException)
-//  })
-
+  it('DeleteBook throws an error if book id is not found', async () => {
+    expect(service.deleteBook(1000)).rejects.toThrow(HttpException)
+ })
+ 
 });
