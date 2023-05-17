@@ -20,8 +20,7 @@ export class BooksController {
 
   @Get('/:id')
   getBook(@Param('id', ParseIntPipe) id: number) {
-    const book = this.booksService.getBook(id);
-    return book;
+    return this.booksService.getBook(id);
   }
 
   @Patch('/:id')

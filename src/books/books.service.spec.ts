@@ -52,7 +52,8 @@ describe('BooksService', () => {
         content: 'content'
       }
     )
-    expect(mockRepository.findOneBy).toHaveBeenCalled()
+    expect(mockRepository.findOneBy).toHaveBeenCalledWith({id:1})
+    expect(mockRepository.findOneBy).toHaveBeenCalledTimes(1)
   })
 
   it('createBook should create a book', async () => {
@@ -62,6 +63,7 @@ describe('BooksService', () => {
     expect(book.content).toEqual('content');
     expect(mockRepository.create).toHaveBeenCalled()
     expect(mockRepository.save).toHaveBeenCalled()
+    expect(mockRepository.create).toHaveBeenCalledWith({title: 'title', content:'content'})
 
   })
   
@@ -69,36 +71,33 @@ describe('BooksService', () => {
      expect(service.getBook(10000)).rejects.toThrow(HttpException)
   })
   
-    it('should update a book given a book id', async () => {
-    
+  it('should update a book given a book id', async () => {
     const book = await service.updateBook(1, {title: 'new title'});
     expect(book).toEqual({
           id: 1,
           title: 'new title',
           content: 'content'
       })
-      expect(mockRepository.findOneBy).toHaveBeenCalled()
-      expect(mockRepository.save).toHaveBeenCalled()
-
-
-    })
+      expect(mockRepository.findOneBy).toHaveBeenCalledWith({id: 1});
+      expect(mockRepository.findOneBy).toHaveBeenCalled();
+      expect(mockRepository.save).toHaveBeenCalled();
+  })
   
   it('throws an error if book id is not found', async () => {
      expect(service.updateBook(1000, {title: 'title'})).rejects.toThrow(HttpException)
   })
 
-    it ('DeleteBook should delete a book', async () => {
+  it ('DeleteBook should delete a book', async () => {
     const response = await (service.deleteBook(15))
     expect(response).toEqual({
       id: 15,
       title: 'title',
       content: 'content'
     });
-    expect(mockRepository.remove).toHaveBeenCalled()
-
+    expect(mockRepository.remove).toHaveBeenCalledTimes(1)
   })
 
-  it('DeleteBook throws an error if book id is not found', async () => {
+it('DeleteBook throws an error if book id is not found', async () => {
     expect(service.deleteBook(1000)).rejects.toThrow(HttpException)
  })
  
