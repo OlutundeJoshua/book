@@ -4,6 +4,8 @@ import { BooksDto } from '../dto/books.dto';
 import { UpdateBookDto } from '../dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
+// import { Observable } from 'rxjs';
 
 @Injectable()
 export class BooksService {
@@ -15,8 +17,14 @@ export class BooksService {
     return this.booksRepository.save(newBook);
   }
   
-  async getBooks() {
-    return this.booksRepository.find();
+  async getBooks(query: PaginateQuery): Promise<Paginated<Books>>{
+    // return this.booksRepository.find();
+    return paginate(query, this.booksRepository, {
+      sortableColumns: ['id', 'title', 'content'],
+      defaultSortBy: [['id', 'ASC']],
+      searchableColumns: ['title', 'content'],
+      maxLimit: 5,
+    })
   }
 
   async getBook(id: number) {

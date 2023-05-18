@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { BooksDto } from '../dto/books.dto';
 import { UpdateBookDto } from '../dto/update-book.dto';
+import { Paginate, PaginateQuery, Paginated } from 'nestjs-paginate';
+import { Books } from 'src/entity/books';
 
 @Controller('books')
 export class BooksController {
@@ -14,8 +16,8 @@ export class BooksController {
   }
 
   @Get()
-  getBooks() {
-    return  this.booksService.getBooks();
+  getBooks(@Paginate() query: PaginateQuery): Promise<Paginated<Books>> {
+    return  this.booksService.getBooks(query);
   }
 
   @Get('/:id')
