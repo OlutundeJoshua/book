@@ -3,6 +3,7 @@ import { BooksModule } from './books/books.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Books } from './entity/books';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     //   entities: [Books],
     //   synchronize: true,
     // }),
-    BooksModule],
+    BooksModule,
+    UsersModule],
   controllers: [],
   providers: [],
 })
