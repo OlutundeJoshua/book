@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { BooksModule } from './books/books.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Books } from './entity/books';
+import { Books } from './books/entity/books';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 

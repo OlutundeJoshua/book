@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { Books } from "src/entity/books";
+import { Books } from "src/books/entity/books";
 import { DataSourceOptions } from "typeorm";
 
 export const typeOrmConfig : DataSourceOptions = {

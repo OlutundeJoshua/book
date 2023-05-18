@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
 import { HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
-import { Books } from '../entity/books';
+import { Books } from './entity/books';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('BooksService', () => {
