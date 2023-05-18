@@ -9,8 +9,6 @@ import { Repository } from 'typeorm';
 export class BooksService {
   constructor(@InjectRepository(Books) 
   private booksRepository: Repository<Books>) {}
-
-  // constructor(@Inject('BOOK') private _books: Books[]) {}
     
   async createBook(book: BooksDto) {
     const newBook = await this.booksRepository.create(book);
@@ -34,12 +32,7 @@ export class BooksService {
     if(!oldBook) {
       throw new NotFoundException('Book not found')
     }
-
-    oldBook.title = book.title ? book.title : oldBook.title;
-    oldBook.content = book.content ? book.content : oldBook.content;
-
-    // Object.assign( oldBook, book);
-    return this.booksRepository.save(oldBook);
+    return this.booksRepository.save({id, ...book});
   }
 
   async deleteBook(id: number) {

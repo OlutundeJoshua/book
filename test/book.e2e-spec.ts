@@ -82,13 +82,12 @@ describe('Book System (e2e)', () => {
       const {id, title, content} = res.body;
       expect(id).toBeDefined();
       expect(title).toEqual('updated');
-      expect(content).toBeDefined();
     })
   })
 
   it('/DELETE should delete a book given id', () => {
     return request(app.getHttpServer())
-    .delete('/books/7')
+    .delete('/books/9')
     .expect(200)
   })
 

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { Books } from '../entity/books';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -14,9 +14,8 @@ describe('BooksService', () => {
 
     findOneBy: jest.fn(({ id }) => {
       if(id > 900) {
-        throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+        throw new NotFoundException('Book not found')
       }
-      
       return Promise.resolve({ id, title: 'title', content: 'content'})
     }),
     
@@ -68,15 +67,14 @@ describe('BooksService', () => {
   })
   
   it('GetBook throws an error if book id is not found', async () => {
-     expect(service.getBook(10000)).rejects.toThrow(HttpException)
+     expect(service.getBook(10000)).rejects.toThrow(NotFoundException)
   })
   
   it('should update a book given a book id', async () => {
     const book = await service.updateBook(1, {title: 'new title'});
     expect(book).toEqual({
           id: 1,
-          title: 'new title',
-          content: 'content'
+          title: 'new title'
       })
       expect(mockRepository.findOneBy).toHaveBeenCalledWith({id: 1});
       expect(mockRepository.findOneBy).toHaveBeenCalled();
@@ -84,7 +82,7 @@ describe('BooksService', () => {
   })
   
   it('throws an error if book id is not found', async () => {
-     expect(service.updateBook(1000, {title: 'title'})).rejects.toThrow(HttpException)
+     expect(service.updateBook(1000, {title: 'title'})).rejects.toThrow(NotFoundException)
   })
 
   it ('DeleteBook should delete a book', async () => {
@@ -98,7 +96,7 @@ describe('BooksService', () => {
   })
 
 it('DeleteBook throws an error if book id is not found', async () => {
-    expect(service.deleteBook(1000)).rejects.toThrow(HttpException)
+    expect(service.deleteBook(1000)).rejects.toThrow(NotFoundException)
  })
  
 });
