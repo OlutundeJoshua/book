@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Books } from './books/entity/books';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -17,21 +18,11 @@ import { UsersModule } from './users/users.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [Books],
+        entities: [Books, User],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: 'localhost',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: 'password',
-    //   database:  'book',
-    //   entities: [Books],
-    //   synchronize: true,
-    // }),
     BooksModule,
     UsersModule],
   controllers: [],

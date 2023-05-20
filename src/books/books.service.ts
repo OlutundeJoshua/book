@@ -5,14 +5,19 @@ import { UpdateBookDto } from './dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BooksService {
-  constructor(@InjectRepository(Books) 
-  private booksRepository: Repository<Books>) {}
+  constructor(@InjectRepository(Books) private booksRepository: Repository<Books>, @InjectRepository(User) private userRepository: Repository<User>) {}  
     
   async createBook(book: BooksDto) {
+    const user = await this.userRepository.findOneBy({id: book.userId});
+    if(!user) {
+      throw new NotFoundException(`User with id: '${book.userId}' not found`) 
+    }
     const newBook = await this.booksRepository.create(book);
+    newBook.author = user
     return this.booksRepository.save(newBook);
   }
   

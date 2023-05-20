@@ -3,19 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
 import { Books } from './entity/books';
-
-
-
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Books])],
+  imports: [TypeOrmModule.forFeature([Books, User])],
   controllers: [BooksController],
-  providers: [
-    BooksService,
-    // {
-    //   provide: 'BOOK',
-    //   useValue: process.env.NODE_ENV === 'development' ? Book : TestBook
-    // }
-  ]
+  providers: [BooksService]
 })
 export class BooksModule {}

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/users/entities/user.entity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Books {
@@ -11,6 +12,7 @@ export class Books {
 
   @Column('text')
   content: string;
-}
 
-// export const  Book: Books[] =[]
+  @ManyToOne(() => User, (user) => user.books, {onDelete: 'CASCADE'})
+  author: User
+}
