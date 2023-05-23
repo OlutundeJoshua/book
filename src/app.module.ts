@@ -5,6 +5,7 @@ import { Books } from './books/entity/books';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
+import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { User } from './users/entities/user.entity';
       inject: [ConfigService],
     }),
     BooksModule,
-    UsersModule],
+    UsersModule,
+    ProfilesModule],
   controllers: [],
   providers: [],
 })
