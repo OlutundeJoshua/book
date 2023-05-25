@@ -14,7 +14,7 @@ export class Books {
   @Column('text')
   content: string;
 
-  @Column()
+  @Column({ nullable: true })
   userId: number;
 
   @ManyToOne(() => User, (user) => user.books, {onDelete: 'SET NULL'})
