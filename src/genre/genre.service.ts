@@ -23,7 +23,7 @@ export class GenreService {
       relations: ['books']
     });
     if(!genre) {
-      throw new NotFoundException('User not found')
+      throw new NotFoundException('Genre not found')
     }
     return genre
   }
@@ -31,7 +31,7 @@ export class GenreService {
   async update(id: number, updateGenreDto: UpdateGenreDto) {
     const user = await this.genreRepository.findOneBy({ id });
     if(!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Genre not found');
     }
     return await this.genreRepository.save({id, ...updateGenreDto})
   }
@@ -39,7 +39,7 @@ export class GenreService {
   async remove(id: number) {
     const genre = await this.genreRepository.findOneBy({id})
     if(!genre) {
-      throw new NotFoundException('User not found')
+      throw new NotFoundException('Genre not found')
     }
     return await this.genreRepository.remove(genre)
   }

@@ -28,8 +28,7 @@ export class BooksService {
       if(!genre) {
         throw new NotFoundException(`Genre with id: '${book.genreId}' not found`) 
       }
-      // console.log(genre)
-      // newBook.genre.push(genre)
+      newBook.genre = [genre]
     }
     return await this.booksRepository.save(newBook);
   }

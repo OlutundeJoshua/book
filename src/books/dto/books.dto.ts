@@ -14,6 +14,6 @@ export class BooksDto {
   @IsNotEmpty()
   userId: number;
 
-  @IsString()
-  genreId: number;
+  @IsNumber()
+  genreId?: number;
 }
