@@ -7,7 +7,8 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { ProfilesModule } from './profiles/profiles.module';
 import { Profile } from './profiles/entities/profile.entity';
-import { Genre } from './books/entity/genre.entity';
+import { Genre } from './genre/entities/genre.entity';
+import { GenreModule } from './genre/genre.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { Genre } from './books/entity/genre.entity';
     }),
     BooksModule,
     UsersModule,
-    ProfilesModule],
+    ProfilesModule,
+    GenreModule],
   controllers: [],
   providers: [],
 })

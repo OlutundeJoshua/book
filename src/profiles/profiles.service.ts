@@ -11,13 +11,11 @@ export class ProfilesService {
   constructor(@InjectRepository(Profile) private profileRepository: Repository<Profile>, @InjectRepository(User) private userRepository: Repository<User>) {}
 
   async create(createProfileDto: CreateProfileDto) {
-    const user = await this.profileRepository.findOneBy({ id: createProfileDto.id });
+    const user = await this.userRepository.findOneBy({ id: createProfileDto.id });
     if(!user) {
       throw new NotFoundException('User not found, Check ID or create new User');
     }
-    const profile = await this.profileRepository.create(createProfileDto)
-    // profile.user = user
-    return await this.profileRepository.save(profile);
+    return await this.profileRepository.save({...createProfileDto, user});
   }
 
   async findAll() {

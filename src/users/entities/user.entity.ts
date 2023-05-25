@@ -13,10 +13,13 @@ export class User {
   @Column('varchar')
   email: string;
 
+  @Column({nullable: true})
+  profileId: number;
+
   @OneToOne(() => Profile, profile => profile.user)
   @JoinColumn()
   profile: Profile
 
-  @OneToMany(() => Books, books => books.author)
+  @OneToMany(() => Books, books => books.user)
   books: Books[];
 }

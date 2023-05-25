@@ -10,8 +10,7 @@ export class UsersService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
 
   async create(createUserDto: CreateUserDto) {
-    const user = await this.usersRepository.create(createUserDto);
-    return this.usersRepository.save(user)
+    return await this.usersRepository.save(createUserDto)
   }
 
   async findAll() {
@@ -19,13 +18,16 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.find({
+      where: {id},
+      relations: ['profile']
+    });
     if(!user) {
       throw new NotFoundException('User not found');
     }
+    // console.log(user.profileId)
     return user;
   }
-
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.usersRepository.findOneBy({ id });

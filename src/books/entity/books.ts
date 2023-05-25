@@ -1,6 +1,6 @@
 import { User } from "src/users/entities/user.entity";
 import { Column, Entity, IsNull, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Genre } from "./genre.entity";
+import { Genre } from "../../genre/entities/genre.entity";
 
 @Entity()
 export class Books {
@@ -18,7 +18,7 @@ export class Books {
   userId: number;
 
   @ManyToOne(() => User, (user) => user.books, {onDelete: 'SET NULL'})
-  author: User
+  user: User
 
   @ManyToMany(() => Genre, (genre) => genre.books)
   @JoinTable()

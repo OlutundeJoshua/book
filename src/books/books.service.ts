@@ -6,10 +6,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { User } from 'src/users/entities/user.entity';
+import { Genre } from 'src/genre/entities/genre.entity';
 
 @Injectable()
 export class BooksService {
-  constructor(@InjectRepository(Books) private booksRepository: Repository<Books>, @InjectRepository(User) private userRepository: Repository<User>) {}  
+  constructor(@InjectRepository(Books) private booksRepository: Repository<Books>, @InjectRepository(User) private userRepository: Repository<User>, @InjectRepository(Genre) private genreRepository: Repository<Genre>) {}  
     
   async createBook(book: BooksDto) {
     const user = await this.userRepository.findOneBy({id: book.userId});
@@ -17,7 +18,19 @@ export class BooksService {
       throw new NotFoundException(`User with id: '${book.userId}' not found`) 
     }
     const newBook = await this.booksRepository.create(book);
-    newBook.author = user
+
+    //Adding author/user to the new book
+    newBook.user = user
+
+    //Adding genre to the new book
+    if(book.genreId) {
+        const genre = await this.genreRepository.findOneBy({id: book.genreId});
+      if(!genre) {
+        throw new NotFoundException(`Genre with id: '${book.genreId}' not found`) 
+      }
+      // console.log(genre)
+      // newBook.genre.push(genre)
+    }
     return await this.booksRepository.save(newBook);
   }
   
