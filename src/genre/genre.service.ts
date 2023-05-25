@@ -29,8 +29,8 @@ export class GenreService {
   }
 
   async update(id: number, updateGenreDto: UpdateGenreDto) {
-    const user = await this.genreRepository.findOneBy({ id });
-    if(!user) {
+    const genre = await this.genreRepository.findOneBy({ id });
+    if(!genre) {
       throw new NotFoundException('Genre not found');
     }
     return await this.genreRepository.save({id, ...updateGenreDto})
