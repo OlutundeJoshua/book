@@ -18,7 +18,7 @@ export class BooksService {
     }
     const newBook = await this.booksRepository.create(book);
     newBook.author = user
-    return this.booksRepository.save(newBook);
+    return await this.booksRepository.save(newBook);
   }
   
   async getBooks(query: PaginateQuery): Promise<Paginated<Books>>{
@@ -32,6 +32,14 @@ export class BooksService {
 
   async getBook(id: number) {
     const book = await this.booksRepository.findOneBy({ id });
+    if(!book) {
+      throw new NotFoundException('Book not found')
+    }
+    return book
+  }
+
+  async getBookByUser(id: number) {
+    const book = await this.booksRepository.findBy({ userId: id });
     if(!book) {
       throw new NotFoundException('Book not found')
     }

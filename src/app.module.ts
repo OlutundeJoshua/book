@@ -6,6 +6,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { ProfilesModule } from './profiles/profiles.module';
+import { Profile } from './profiles/entities/profile.entity';
+import { Genre } from './books/entity/genre.entity';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { ProfilesModule } from './profiles/profiles.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [Books, User],
+        entities: [Books, User, Profile, Genre],
         synchronize: true,
       }),
       inject: [ConfigService],

@@ -24,6 +24,12 @@ export class BooksController {
   getBook(@Param('id', ParseIntPipe) id: number) {
     return this.booksService.getBook(id);
   }
+  
+  @Get('user/:id')
+  getBookByUser(@Param('id', ParseIntPipe) id: number) {
+    return this.booksService.getBookByUser(id);
+  }
+
 
   @Patch('/:id')
   updateBook(

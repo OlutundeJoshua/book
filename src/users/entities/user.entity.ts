@@ -1,5 +1,6 @@
 import { Books } from "src/books/entity/books";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Profile } from "src/profiles/entities/profile.entity";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -11,6 +12,10 @@ export class User {
 
   @Column('varchar')
   email: string;
+
+  @OneToOne(() => Profile, profile => profile.user)
+  @JoinColumn()
+  profile: Profile
 
   @OneToMany(() => Books, books => books.author)
   books: Books[];

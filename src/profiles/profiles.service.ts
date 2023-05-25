@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Profile } from './entities/profile.entity';
+import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ProfilesService {
-  create(createProfileDto: CreateProfileDto) {
-    return 'This action adds a new profile';
+  constructor(@InjectRepository(Profile) private profileRepository: Repository<Profile>, @InjectRepository(User) private userRepository: Repository<User>) {}
+
+  async create(createProfileDto: CreateProfileDto) {
+    const user = await this.profileRepository.findOneBy({ id: createProfileDto.id });
+    if(!user) {
+      throw new NotFoundException('User not found, Check ID or create new User');
+    }
+    const profile = await this.profileRepository.create(createProfileDto)
+    // profile.user = user
+    return await this.profileRepository.save(profile);
   }
 
-  findAll() {
-    return `This action returns all profiles`;
+  async findAll() {
+    return await this.profileRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
+  async findOne(id: number) {
+    const profile = await this.profileRepository.findOneBy({ id });
+    if(!profile) {
+      throw new NotFoundException('User not found');
+    }
+    return profile;
   }
 
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
+  async update(id: number, updateProfileDto: UpdateProfileDto) {
+    const profile = await this.profileRepository.findOneBy({ id });
+    if(!profile) {
+      throw new NotFoundException('User not found');
+    }
+    return await this.profileRepository.save({id, ...updateProfileDto});
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
+  async remove(id: number) {
+    const profile = await this.profileRepository.findOneBy({ id });
+    if(!profile) {
+      throw new NotFoundException('User not found');
+    }
+    return await this.profileRepository.remove(profile);  
   }
 }
