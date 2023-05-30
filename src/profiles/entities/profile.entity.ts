@@ -15,6 +15,6 @@ export class Profile {
   @Column('int')
   age: number
 
-  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE'})
+  @OneToOne(() => User, (user) => user.profile)
   user: User
 }

@@ -16,7 +16,7 @@ export class User {
   @Column({nullable: true})
   profileId: number;
 
-  @OneToOne(() => Profile, profile => profile.user)
+  @OneToOne(() => Profile, profile => profile.user, {onDelete: 'SET NULL'})
   @JoinColumn()
   profile: Profile
 
