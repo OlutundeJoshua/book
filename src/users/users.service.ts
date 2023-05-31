@@ -25,7 +25,6 @@ export class UsersService {
     if(!user) {
       throw new NotFoundException('User not found');
     }
-    // console.log(user.profileId)
     return user;
   }
 

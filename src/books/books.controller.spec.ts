@@ -4,6 +4,7 @@ import { BooksService } from './books.service';
 import { BooksDto } from './dto/books.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Books } from './entity/books';
+import { PaginateQuery } from 'nestjs-paginate';
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -26,15 +27,23 @@ describe('BooksController', () => {
           content: book.content ? book.content : 'original'
         })
       }),
-
+      
       getBook: jest.fn((id: number) => {
         return Promise.resolve({
           id,
           title: 'foo',
           content: 'content'
-      })
-    }),
-
+        })
+      }),
+      
+      getBookByUser: jest.fn((id: number) => {
+        return Promise.resolve([{
+          id,
+          title: 'foo',
+          content: 'content'
+        } as Books])
+      }),
+      
     getBooks: jest.fn(() =>{
       return Promise.resolve([{
         id: 1,
@@ -64,12 +73,9 @@ describe('BooksController', () => {
     controller = module.get<BooksController>(BooksController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
 
   it('create a book',  async () => {
-    const book = await controller.createBook({title: 'foo', content: 'Test'});
+    const book = await controller.createBook({userId: 1, title: 'foo', content: 'Test'});
     expect(book).toBeDefined()
     expect(fakeBooksService.createBook).toHaveBeenCalled()
   })
@@ -80,8 +86,15 @@ describe('BooksController', () => {
     expect(fakeBooksService.getBook).toHaveBeenCalled()
   });
 
+  it('findBooksByUser returns books for a specific user', async () => {
+    const book = await controller.getBookByUser(1)
+    expect(book).toBeDefined()
+    expect(fakeBooksService.getBookByUser).toHaveBeenCalled()
+  })
+
   it('findBooks return all the books', () => {
-    const books = controller.getBooks();
+    let query: PaginateQuery
+    const books = controller.getBooks(query);
     expect(books).toBeDefined();
     expect(fakeBooksService.getBooks).toHaveBeenCalled()
   })
