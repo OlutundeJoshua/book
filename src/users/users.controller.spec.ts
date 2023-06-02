@@ -7,9 +7,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 describe('UsersController', () => {
   let controller: UsersController;
-
-    // id, name, email
-
   const fakeUsersService ={
     create: jest.fn((userDto: CreateUserDto) => {
       return {
@@ -17,7 +14,7 @@ describe('UsersController', () => {
         ...userDto
       }
     }),
-    
+
     findAll: jest.fn(() => Promise.resolve([])),
 
     findOne: jest.fn((id:number) => {
