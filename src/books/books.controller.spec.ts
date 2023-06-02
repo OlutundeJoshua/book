@@ -18,7 +18,6 @@ describe('BooksController', () => {
          ...book
         } 
       }),
-
       
       updateBook: jest.fn((id: number, book: UpdateBookDto) => {
         return Promise.resolve({

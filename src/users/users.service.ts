@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.usersRepository.find({
+    const user = await this.usersRepository.findOne({
       where: {id},
       relations: ['profile']
     });

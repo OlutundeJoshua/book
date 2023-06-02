@@ -72,7 +72,6 @@ describe('UsersController', () => {
     expect(fakeUsersService.findAll).toHaveBeenCalledTimes(1)
   })
 
-  // Check here
   it('findOne returns a user with userId', async () => {
     const user = await controller.findOne(1)
     expect(user).toBeDefined();
