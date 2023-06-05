@@ -4,6 +4,8 @@ import { BooksDto } from './dto/books.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Paginate, PaginateQuery, Paginated } from 'nestjs-paginate';
 import { Books } from 'src/books/entity/books';
+import { PaginationQueryDto } from './dto/paginatedQuery.dto';
+import { PaginatedDto } from './dto/paginated.dto';
 
 @Controller('books')
 export class BooksController {
@@ -16,9 +18,14 @@ export class BooksController {
   }
 
   @Get()
-  getBooks(@Paginate() query: PaginateQuery): Promise<Paginated<Books>> {
+  getBooks(@Query() query: PaginationQueryDto): Promise<PaginatedDto<Books>> {
     return  this.booksService.getBooks(query);
   }
+
+  // @Get()
+  // getBooks(@Paginate() query: PaginateQuery): Promise<Paginated<Books>> {
+  //   return  this.booksService.getBooks(query);
+  // }
 
   @Get('/:id')
   getBook(@Param('id', ParseIntPipe) id: number) {

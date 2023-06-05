@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import { PaginateQuery, paginate, Paginated, PaginationType } from 'nestjs-paginate'
 import { User } from 'src/users/entities/user.entity';
 import { Genre } from 'src/genre/entities/genre.entity';
+import { PaginationQueryDto } from './dto/paginatedQuery.dto';
+import { PaginatedDto } from './dto/paginated.dto';
 
 @Injectable()
 export class BooksService {
@@ -32,15 +34,38 @@ export class BooksService {
     }
     return await this.booksRepository.save(newBook);
   }
+
+  // async getBooks(query: PaginateQuery): Promise<Paginated<Books>>{
+  //   return paginate(query, this.booksRepository, {
+  //     sortableColumns: ['id', 'title', 'content'],
+  //     defaultSortBy: [['id', 'ASC']],
+  //     searchableColumns: ['title', 'content'],
+  //     maxLimit: 5,
+  //   })
+  // }
   
-  async getBooks(query: PaginateQuery): Promise<Paginated<Books>>{
-    return paginate(query, this.booksRepository, {
-      sortableColumns: ['id', 'title', 'content'],
-      defaultSortBy: [['id', 'ASC']],
-      searchableColumns: ['title', 'content'],
-      maxLimit: 5,
-    })
+  async getBooks(query: PaginationQueryDto): Promise<PaginatedDto<Books>> {
+    const { page, pageSize } = query;
+    const pageItems = pageSize || 10;
+    const currentPage = page || 1; // Default to the first page if page is not provided
+    const offset = (currentPage - 1) * pageItems;
+    const [books, totalCount] = await Promise.all([
+      this.booksRepository.find({
+        skip: offset,
+        take: pageItems,
+      }),
+      this.booksRepository.count(),
+    ]);
+
+    return {
+      total: totalCount,
+      limit: pageItems,
+      offset,
+      results: books,
+    };
   }
+
+
 
   async getBook(id: number) {
     const book = await this.booksRepository.findOneBy({ id });

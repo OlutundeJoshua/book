@@ -3,9 +3,11 @@ import { BooksService } from './books.service';
 import { NotFoundException } from '@nestjs/common';
 import { Books } from './entity/books';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { PaginateQuery, Paginated } from 'nestjs-paginate';
+import * as paginate from 'nestjs-paginate';
 import { Genre } from 'src/genre/entities/genre.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Repository } from 'typeorm';
+
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -30,7 +32,7 @@ describe('BooksService', () => {
       return Promise.resolve([])
     }),
     
-    remove: jest.fn(({ id }) => Promise.resolve({ id, title: 'title', content: 'content'}))
+    remove: jest.fn(({ id }) => Promise.resolve({ id, title: 'title', content: 'content'})),
   }
 
   const genreMockRepository = {
@@ -93,17 +95,33 @@ describe('BooksService', () => {
       .rejects.toThrow(NotFoundException) 
   })
   
-  //HERE
-  it('getBooks should return all books', async () => {
-       let query: PaginateQuery = {
-      page: 2,
-      limit: 10,
-      path: 'localhost:3000/books/',
-    }
-    const result: Paginated<Books> = await service.getBooks(query);
-  
-    expect(result).toBeDefined();
-  })
+  it('should return all users', async () => {
+    const books = [
+      { id: 1, userName: 'Test Example', email: 'testExample@google.com' },
+      { id: 2, userName: 'Test', email: 'test@google.com' },
+    ];
+    const totalCount = 2;
+
+    // Mock the userRepository.find method
+    mockRepository.find.mockResolvedValue(books);
+
+    // Mock the userRepository.count method
+    mockRepository.count.mockResolvedValue(totalCount);
+
+    const query = { page: 1, pageSize: 10 };
+    const result = await service.getBooks(query);
+
+    expect(result.total).toEqual(totalCount);
+    expect(result.limit).toEqual(query.pageSize);
+    expect(result.offset).toEqual((query.page - 1) * query.pageSize);
+    expect(result.results).toEqual(books);
+    expect(mockRepository.find).toHaveBeenCalledWith({
+      skip: (query.page - 1) * query.pageSize,
+      take: query.pageSize,
+    });
+    expect(mockRepository.count).toHaveBeenCalled();
+  });
+
 
   it('getBook should return a book given its id', async () => {
     const book = await service.getBook(1)
