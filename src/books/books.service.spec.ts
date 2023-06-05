@@ -3,7 +3,7 @@ import { BooksService } from './books.service';
 import { NotFoundException } from '@nestjs/common';
 import { Books } from './entity/books';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { PaginateQuery } from 'nestjs-paginate';
+import { PaginateQuery, Paginated } from 'nestjs-paginate';
 import { Genre } from 'src/genre/entities/genre.entity';
 import { User } from 'src/users/entities/user.entity';
 
@@ -14,6 +14,7 @@ describe('BooksService', () => {
     create: jest.fn((dto) => dto),
     save: jest.fn((book) => Promise.resolve({ id: 1, ...book})),
     find: jest.fn(() => Promise.resolve([])),
+    count: jest.fn(() => Promise.resolve(0)),
 
     findOneBy: jest.fn(({ id }) => {
       if(id > 900) {
@@ -92,12 +93,17 @@ describe('BooksService', () => {
       .rejects.toThrow(NotFoundException) 
   })
   
-  // it('getBooks should return all books', async () => {
-  //   let query: PaginateQuery 
-  //   const books = await service.getBooks(query);
-  //   expect(books).toBeDefined;
-  //   // expect(mockRepository.find).toHaveBeenCalled()
-  // })
+  //HERE
+  it('getBooks should return all books', async () => {
+       let query: PaginateQuery = {
+      page: 2,
+      limit: 10,
+      path: 'localhost:3000/books/',
+    }
+    const result: Paginated<Books> = await service.getBooks(query);
+  
+    expect(result).toBeDefined();
+  })
 
   it('getBook should return a book given its id', async () => {
     const book = await service.getBook(1)
@@ -121,10 +127,6 @@ describe('BooksService', () => {
     expect(book).toBeDefined()
     expect(mockRepository.findBy).toHaveBeenCalledTimes(1)
   })
- 
-  // it('getBookByUser throws an error if userId is not found', async () => {
-  //   expect(service.getBookByUser(10000)).rejects.toThrow(NotFoundException)
-  // })
   
   it('should update a book given a book id', async () => {
     const book = await service.updateBook(1, {title: 'new title'});

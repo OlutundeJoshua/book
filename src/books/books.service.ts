@@ -4,7 +4,7 @@ import { BooksDto } from './dto/books.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
+import { PaginateQuery, paginate, Paginated, PaginationType } from 'nestjs-paginate'
 import { User } from 'src/users/entities/user.entity';
 import { Genre } from 'src/genre/entities/genre.entity';
 

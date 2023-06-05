@@ -104,16 +104,11 @@ describe('ProfilesService', () => {
     expect(service.update(1000, {gender: 'female', age: 49})).rejects.toThrow(NotFoundException)
   })
 
-  // it('REMOVE should delete a profile given its id', async () => {
-  //   const profile = await service.remove(5)
-  //   expect(profile).toEqual({
-  //     id: 5,
-  //     age: 20,
-  //     phoneNumber: '123',
-  //     gender: 'male'
-  //   })
-  //   expect(mockRepository.remove).toHaveBeenCalledTimes(1);
-  // })
+  it('REMOVE should delete a profile given its id', async () => {
+    const profile = await service.remove(5)
+    expect(profile).toBeDefined()
+    expect(mockRepository.remove).toHaveBeenCalledTimes(1);
+  })
 
   it('REMOVE throws an error if profile id is not found', async () => {
     expect(service.remove(1000)).rejects.toThrow(NotFoundException)
